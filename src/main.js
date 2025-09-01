@@ -10,7 +10,7 @@ import { initHUD, updateHUD } from './ui/hud.js';
 import { initCameraState, setCameraTargets, updateCamera } from './systems/camera.js';
 import { initControls } from './systems/controls.js';
 import { collide } from './systems/collision.js';
-import { computeMoveInput, applyAerodynamics, updateArms } from './systems/aero.js';
+import { computeMoveInput, applyAerodynamics } from './systems/aero.js';
 import { initAudio } from './systems/sound.js';
 import { initGUI } from './ui/gui.js';
 import { loadHelicopter, attachPlayerToHelicopter } from './entities/vehicle.js';
@@ -57,7 +57,7 @@ import { loadHelicopter, attachPlayerToHelicopter } from './entities/vehicle.js'
     setCameraTargets(new THREE.Vector3(0.5, 1.6, -4.8), 80);
 
     let last = performance.now();
-    function step() {
+    function animate() {
         const now = performance.now();
         let dt = (now - last) / 1000; if (dt > 0.06) dt = 0.06; last = now;
         updateWindParticles(dt);
@@ -89,14 +89,13 @@ import { loadHelicopter, attachPlayerToHelicopter } from './entities/vehicle.js'
             if (state.pos.y < state.PLAYER_RADIUS) state.pos.y = state.PLAYER_RADIUS;
         }
         state.player.position.copy(state.pos);
-        updateArms(dt);
         updateCamera();
         state.windTimer += dt;
         updateHUD(getWind(state.windTimer));
         renderFrame();
-        requestAnimationFrame(step);
+        requestAnimationFrame(animate);
     }
 
-    step();
+    animate();
 })();
 

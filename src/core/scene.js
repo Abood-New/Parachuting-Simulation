@@ -4,12 +4,6 @@ import { state } from './state.js';
 
 export function initScene() {
 	state.scene = new THREE.Scene();
-
-
-	// const DAY = new THREE.Color(0x87cfe6);
-	// state.scene.background = DAY.clone();
-	// state.scene.fog = new THREE.FogExp2(state.scene.background, 0.0006);
-	// Skybox
 	const loader = new THREE.CubeTextureLoader();
 	const skybox = loader.load([
 		'/skybox/px.png', // right
@@ -21,7 +15,6 @@ export function initScene() {
 	]);
 	state.scene.background = skybox;
 	state.scene.fog = new THREE.FogExp2(0x87cfe6, 0.0006);
-
 
 	state.camera = new THREE.PerspectiveCamera(150, window.innerWidth / window.innerHeight, 0.1, 20000);
 	safeSetCameraPosition(state.camera, 0, 8, -16);

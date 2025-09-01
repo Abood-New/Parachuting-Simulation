@@ -27,10 +27,53 @@ export function dragForce({ cd, area, velocity, airDensity }) {
 	return 0.5 * airDensity * cd * area * velocity * velocity;
 }
 
+// Calculate drag acceleration (m/s^2) - force divided by mass
+export function dragAcceleration({ cd, area, velocity, airDensity, mass }) {
+	return dragForce({ cd, area, velocity, airDensity }) / mass;
+}
+
 // Net force (N)
 // Updated to work with new dragForce function signature
 export function netForce({ cd, area, velocity, airDensity, weight }) {
 	return weight - dragForce({ cd, area, velocity, airDensity });
+}
+
+// Net acceleration (m/s^2) - net force divided by mass
+export function netAcceleration({ cd, area, velocity, airDensity, weight, mass }) {
+	return netForce({ cd, area, velocity, airDensity, weight }) / mass;
+}
+
+// Calculate lift force (N) based on sink rate and parachute deployment
+export function liftForce({ sinkRate, canopyDeploy, liftGain, angleOfAttack = 0 }) {
+	const liftEfficiency = 1 - angleOfAttack * 0.3;
+	return liftGain * sinkRate * canopyDeploy * liftEfficiency;
+}
+
+// Calculate lift acceleration (m/s^2)
+export function liftAcceleration({ sinkRate, canopyDeploy, liftGain, mass, angleOfAttack = 0 }) {
+	return liftForce({ sinkRate, canopyDeploy, liftGain, angleOfAttack }) / mass;
+}
+
+// Calculate glide force (N) for horizontal movement
+export function glideForce({ sinkRate, canopyDeploy, glideGain, angleOfAttack = 0 }) {
+	const glideEfficiency = Math.max(0.3, 1 - angleOfAttack);
+	return glideGain * sinkRate * canopyDeploy * glideEfficiency;
+}
+
+// Calculate glide acceleration (m/s^2)
+export function glideAcceleration({ sinkRate, canopyDeploy, glideGain, mass, angleOfAttack = 0 }) {
+	return glideForce({ sinkRate, canopyDeploy, glideGain, angleOfAttack }) / mass;
+}
+
+// Calculate steering force (N)
+export function steeringForce({ steerInput, canopyDeploy, steerForce, speed, maxSpeed = 8 }) {
+	const steerEffectiveness = Math.min(1, speed / maxSpeed);
+	return (steerInput * steerForce) * canopyDeploy * steerEffectiveness;
+}
+
+// Calculate steering acceleration (m/s^2)
+export function steeringAcceleration({ steerInput, canopyDeploy, steerForce, mass, speed, maxSpeed = 8 }) {
+	return steeringForce({ steerInput, canopyDeploy, steerForce, speed, maxSpeed }) / mass;
 }
 
 // Velocity after landing (m/s)
@@ -38,7 +81,6 @@ export function vAfterLand(v0, t0, g = 9.81) {
 	return v0 - (0.6 * g * t0);
 }
 
-// --- Exported Constants (can be tuned by GUI) ---
 export const PHYS_DEFAULTS = {
 	gravity: -9.81, // m/s^2 (negative for downward acceleration)
 	k: 1.0,        // Drag coefficient (default, can be changed)
@@ -70,8 +112,6 @@ export const PHYS_DEFAULTS = {
 	steadyWindZ: 1, // Steady wind Z component
 };
 
-// Legacy compatibility export (to prevent import errors while updating other modules)
-// All physics logic is now in the new functions above.
 export const phys = {};
 
 

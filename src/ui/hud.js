@@ -1,6 +1,6 @@
 import { airDensityAt } from '../systems/wind.js';
 import { state } from '../core/state.js';
-import { PHYS_DEFAULTS } from '../core/phys.js';
+import { dragForce, PHYS_DEFAULTS } from '../core/phys.js';
 
 let hudEl;
 export function initHUD() {
@@ -26,14 +26,12 @@ export function updateHUD(windVec) {
 	const timeToGround = state.pos.y / Math.max(0.1, Math.abs(state.vel.y));
 	const landingDistance = Math.sqrt(Math.pow(state.vel.x * timeToGround, 2) + Math.pow(state.vel.z * timeToGround, 2));
 
-	// Calculate forces using the SAME method as aero.js
 	const gravityForce = PHYS_DEFAULTS.mass * Math.abs(PHYS_DEFAULTS.gravity); // Weight force (N)
 	const rho = airDensityAt(state.pos.y);
 	const areaEff = state.parachuteOpen ? PHYS_DEFAULTS.Area_canopy : PHYS_DEFAULTS.Area_body;
 	const cdEff = state.parachuteOpen ? PHYS_DEFAULTS.Cd_canopy : PHYS_DEFAULTS.Cd_body;
 
-	// Use the EXACT same drag calculation as aero.js
-	const dragForceValue = 0.5 * rho * cdEff * areaEff * speed * speed;
+	const dragForceValue = dragForce({ cd: cdEff, area: areaEff, velocity: speed, airDensity: rho });
 	const netForceValue = gravityForce - dragForceValue;
 	const acceleration = netForceValue / PHYS_DEFAULTS.mass;
 
