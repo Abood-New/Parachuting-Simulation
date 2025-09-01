@@ -1,8 +1,3 @@
-// Physics and simulation logic extracted and adapted from main2.js
-// All units are SI (meters, kilograms, seconds)
-
-// --- Parachute and Skydiver Physics Functions ---
-
 // Calculate parachute area (m^2)
 export function swatheParachute({ shapeOfParachute, radius, parachuteTall, parachuteWidth }) {
 	if (shapeOfParachute === false) {
@@ -27,13 +22,15 @@ export function mParachute(roh, volume) {
 }
 
 // Calculate air resistance (drag force, N)
-export function dragForce({ k, s, v }) {
-	return 0.5 * k * 1 * s * v * v;
+// Updated to use proper air density instead of hardcoded 1
+export function dragForce({ cd, area, velocity, airDensity }) {
+	return 0.5 * airDensity * cd * area * velocity * velocity;
 }
 
 // Net force (N)
-export function netForce({ k, s, v, w }) {
-	return w - dragForce({ k, s, v });
+// Updated to work with new dragForce function signature
+export function netForce({ cd, area, velocity, airDensity, weight }) {
+	return weight - dragForce({ cd, area, velocity, airDensity });
 }
 
 // Velocity after landing (m/s)

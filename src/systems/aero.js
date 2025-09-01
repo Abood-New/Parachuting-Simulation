@@ -3,7 +3,6 @@ import { state } from '../core/state.js';
 import { swatheParachute, volumeParachute, dragForce, netForce, PHYS_DEFAULTS } from '../core/phys.js';
 import { getWind, airDensityAt } from './wind.js';
 import { setCameraTargets } from './camera.js';
-import { createRopes, disposeRopes } from '../gear/ropes.js';
 
 export function computeMoveInput() {
 	const k = state.keys;
@@ -86,10 +85,8 @@ export function applyAerodynamics(dt) {
 	state.acc.add(windForce).add(turbulence);
 	if (state.parachuteOpen !== wasOpen) {
 		if (state.parachuteOpen) {
-			createRopes();
 			setCameraTargets(new THREE.Vector3(0, 4.8, -12.5), 74);
 		} else {
-			disposeRopes();
 			setCameraTargets(new THREE.Vector3(0, 2.8, -6.8), 80);
 		}
 	}

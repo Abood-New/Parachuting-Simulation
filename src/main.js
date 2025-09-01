@@ -1,12 +1,10 @@
 import { THREE, initScene, initGroundAndLights, renderFrame } from './core/scene.js';
 import { state } from './core/state.js';
-import { phys } from './core/phys.js';
 import { PHYS_DEFAULTS } from './core/phys.js';
 import { buildCity } from './world/city.js';
 import { initTrees } from './world/trees.js';
 import { initPlayerWithModel } from './entities/player.js';
-import { makeCanopy, buildRimPoints, updateCanopyTransform, loadCanopyModel } from './gear/parachute.js';
-import { updateRopes } from './gear/ropes.js';
+import { updateCanopyTransform, loadCanopyModel } from './entities/parachute.js';
 import { initWindParticles, updateWindParticles, getWind } from './systems/wind.js';
 import { initHUD, updateHUD } from './ui/hud.js';
 import { initCameraState, setCameraTargets, updateCamera } from './systems/camera.js';
@@ -15,35 +13,31 @@ import { collide } from './systems/collision.js';
 import { computeMoveInput, applyAerodynamics, updateArms } from './systems/aero.js';
 import { initAudio } from './systems/sound.js';
 import { initGUI } from './ui/gui.js';
-import { loadHelicopter, attachPlayerToHelicopter, detachPlayerFromHelicopter } from './entities/vehicle.js';
+import { loadHelicopter, attachPlayerToHelicopter } from './entities/vehicle.js';
 
 (async () => {
     initScene();
     initGroundAndLights();
     buildCity();
     initTrees();
-    const modelUrl = new URL('./mod/Soldier.gltf', import.meta.url).href;
-    await initPlayerWithModel(modelUrl);
-    // Hide player initially (inside helicopter)
+    try {
+        const modelUrl = new URL('./mod/Soldier.gltf', import.meta.url).href;
+        await initPlayerWithModel(modelUrl);
+    } catch (e) {
+        console.log('Failed to load Person model', e);
+    }
     state.player.visible = false;
 
     try {
         const canopyUrl = new URL('./mod/army_parachute.glb', import.meta.url).href;
         await loadCanopyModel(canopyUrl);
     } catch (e) {
-        console.log('Failed to load canopy model, building procedural canopy', e);
-        makeCanopy(PHYS_DEFAULTS.canopyRadius || 9.2);
+        console.log('Failed to load canopy model', e);
     }
-    // state.ropeAttachLocal = buildRimPoints(phys.ropeCount);
-    // updateRopes();
-
-    // Load helicopter and place player inside
     try {
         const heliUrl = new URL('./mod/army_helicopter.glb', import.meta.url).href; // place your model
         await loadHelicopter(heliUrl);
         attachPlayerToHelicopter();
-        // Player is inside helicopter, keep hidden
-        state.player.visible = false;
     } catch (e) {
         console.log('Failed to load helicopter model', e);
     }

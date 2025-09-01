@@ -30,7 +30,7 @@ export async function loadHelicopter(modelUrlHref) {
 export function attachPlayerToHelicopter() {
     if (!state.helicopter) return;
     state.inVehicle = true;
-    // Place player at seat
+
     const seatWorld = state.heliSeatNode.getWorldPosition(new THREE.Vector3());
     state.pos.copy(seatWorld);
     state.vel.set(0, 0, 0);

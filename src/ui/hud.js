@@ -1,6 +1,6 @@
 import { airDensityAt } from '../systems/wind.js';
 import { state } from '../core/state.js';
-import { PHYS_DEFAULTS, dragForce, netForce } from '../core/phys.js';
+import { PHYS_DEFAULTS } from '../core/phys.js';
 
 let hudEl;
 export function initHUD() {

@@ -5,7 +5,7 @@ export function collide(position, radius) {
 	let result = { hit: false, normal: new THREE.Vector3(0, 1, 0), point: position.clone() };
 	if (position.y - radius <= 0) {
 		result.hit = true; result.point.y = radius; result.normal.set(0, 1, 0); position.y = radius;
-		// Death detection: high speed, parachute not open
+
 		if (!state.parachuteOpen && Math.abs(state.vel.y) > 18) {
 			state.playerDead = true;
 		}

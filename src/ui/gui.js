@@ -1,9 +1,5 @@
 import GUI from 'three/addons/libs/lil-gui.module.min.js';
 import { PHYS_DEFAULTS } from '../core/phys.js';
-import { state } from '../core/state.js';
-import { createRopes } from '../gear/ropes.js';
-import { makeCanopy, buildRimPoints } from '../gear/parachute.js';
-
 // Local GUI state for tunable parameters
 const guiState = {
     // Air & Atmosphere
