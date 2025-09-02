@@ -6,7 +6,7 @@ export function collide(position, radius) {
 	if (position.y - radius <= 0) {
 		result.hit = true; result.point.y = radius; result.normal.set(0, 1, 0); position.y = radius;
 
-		if (!state.parachuteOpen && Math.abs(state.vel.y) > 18) {
+		if (Math.abs(state.vel.y) > 14) {
 			state.playerDead = true;
 		}
 		state.vel.y = Math.max(0, state.vel.y * -0.2);

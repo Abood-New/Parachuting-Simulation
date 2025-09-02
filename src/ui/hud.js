@@ -1,6 +1,6 @@
 import { airDensityAt } from '../systems/wind.js';
 import { state } from '../core/state.js';
-import { dragForce, PHYS_DEFAULTS } from '../core/phys.js';
+import { dragForce, netForce, PHYS_DEFAULTS } from '../core/phys.js';
 
 let hudEl;
 export function initHUD() {
@@ -23,17 +23,16 @@ export function updateHUD(windVec) {
 	const horizontalSpeed = Math.sqrt(state.vel.x * state.vel.x + state.vel.z * state.vel.z);
 	const verticalSpeed = Math.abs(state.vel.y);
 
-	const gravityForce = PHYS_DEFAULTS.mass * Math.abs(PHYS_DEFAULTS.gravity); // Weight force (N)
+	const weightForce = PHYS_DEFAULTS.mass * Math.abs(PHYS_DEFAULTS.gravity); // Weight force (N)
 	const rho = airDensityAt(state.pos.y);
 	const areaEff = state.parachuteOpen ? PHYS_DEFAULTS.Area_canopy : PHYS_DEFAULTS.Area_body;
 	const cdEff = state.parachuteOpen ? PHYS_DEFAULTS.Cd_canopy : PHYS_DEFAULTS.Cd_body;
 
 	const dragForceValue = dragForce({ cd: cdEff, area: areaEff, velocity: speed, airDensity: rho });
-	const netForceValue = gravityForce - dragForceValue;
+	const netForceValue = netForce({ cd: cdEff, area: areaEff, velocity: speed, airDensity: rho, weight: weightForce })
 	const acceleration = netForceValue / PHYS_DEFAULTS.mass;
 
-	// Terminal velocity calculation using the same parameters
-	const terminalVelocity = Math.sqrt((2 * gravityForce) / (rho * cdEff * areaEff));
+	const terminalVelocity = Math.sqrt((2 * weightForce) / (rho * cdEff * areaEff));
 
 	if (!hudEl) initHUD();
 	let deathMsg = '';
@@ -54,7 +53,7 @@ export function updateHUD(windVec) {
 	
 	<div style="border-top: 1px solid #666; margin-top: 8px; padding-top: 8px;">
 		<div style="color: #ff4444; font-weight: bold;">=== القوى ===</div>
-		<div style="color: #ff8888;">قوة الجاذبية: ${gravityForce.toFixed(1)} N</div>
+		<div style="color: #ff8888;">قوة الجاذبية: ${weightForce.toFixed(1)} N</div>
 		<div style="color: #88ff88;">قوة مقاومة الهواء: ${dragForceValue.toFixed(1)} N</div>
 		<div style="color: ${netForceValue > 0 ? '#ffff88' : '#88ffff'}; font-weight: bold;">المحصلة: ${netForceValue.toFixed(1)} N</div>
 		<div style="color: #ffaa88;">التسارع: ${acceleration.toFixed(2)} m/s²</div>

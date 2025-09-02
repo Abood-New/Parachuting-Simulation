@@ -1,5 +1,5 @@
 import GUI from 'three/addons/libs/lil-gui.module.min.js';
-import { PHYS_DEFAULTS } from '../core/phys.js';
+import { PHYS_DEFAULTS, swatheParachute } from '../core/phys.js';
 // Local GUI state for tunable parameters
 const guiState = {
     // Air & Atmosphere
@@ -47,10 +47,6 @@ export function initGUI() {
     const fAir = gui.addFolder('Air & Atmosphere');
     fAir.add(guiState, 'RHO0', 0.5, 1.6, 0.005).onChange(v => PHYS_DEFAULTS.RHO0 = v);
     fAir.add(guiState, 'SCALE_HEIGHT', 3000, 12000, 50).onChange(v => PHYS_DEFAULTS.SCALE_HEIGHT = v);
-    fAir.add(guiState, 'Cd_body', 0.1, 2.5, 0.05).onChange(v => PHYS_DEFAULTS.Cd_body = v);
-    fAir.add(guiState, 'Area_body', 0.2, 1.5, 0.05).onChange(v => PHYS_DEFAULTS.Area_body = v);
-    fAir.add(guiState, 'Cd_canopy', 0.5, 3.5, 0.05).onChange(v => PHYS_DEFAULTS.Cd_canopy = v);
-    fAir.add(guiState, 'Area_canopy', 10, 80, 1).onChange(v => PHYS_DEFAULTS.Area_canopy = v);
 
     const fGrav = gui.addFolder('Mass & Gravity');
     fGrav.add(guiState, 'mass', 40, 140, 1).onChange(v => PHYS_DEFAULTS.mass = v);
@@ -74,7 +70,6 @@ export function initGUI() {
         updateParachuteArea();
     });
     fParaSpecs.add(guiState, 'k', 0.7, 1.4, 0.1).onChange(v => {
-        // Update drag coefficients
         PHYS_DEFAULTS.Cd_body = v;
         PHYS_DEFAULTS.Cd_canopy = v * 1.5; // Canopy has higher drag
     });
@@ -101,15 +96,24 @@ export function initGUI() {
     });
 }
 
-// Helper function to update parachute area based on shape and dimensions
 function updateParachuteArea() {
     if (guiState.shape_of_parachute === false) {
         // Circular parachute
-        const area = (Math.PI * guiState.radius_parachute * guiState.radius_parachute) / 10000; // Convert cm² to m²
+        const area = swatheParachute({
+            shapeOfParachute: guiState.shape_of_parachute,
+            radius: guiState.radius_parachute,
+            parachuteWidth: guiState.parachute_width,
+            parachuteTall: guiState.parachute_tall
+        });
         PHYS_DEFAULTS.Area_canopy = area;
     } else {
         // Rectangular parachute
-        const area = (guiState.parachute_tall * guiState.parachute_width) / 10000; // Convert cm² to m²
+        const area = swatheParachute({
+            shapeOfParachute: guiState.shape_of_parachute,
+            radius: guiState.radius_parachute,
+            parachuteWidth: guiState.parachute_width,
+            parachuteTall: guiState.parachute_tall
+        })
         PHYS_DEFAULTS.Area_canopy = area;
     }
 }

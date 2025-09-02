@@ -29,8 +29,6 @@ export function dragAcceleration({ cd, area, velocity, airDensity, mass }) {
 export function netForce({ cd, area, velocity, airDensity, weight }) {
 	return weight - dragForce({ cd, area, velocity, airDensity });
 }
-
-// Net acceleration (m/s^2) - net force divided by mass
 export function netAcceleration({ cd, area, velocity, airDensity, weight, mass }) {
 	return netForce({ cd, area, velocity, airDensity, weight }) / mass;
 }
@@ -40,7 +38,6 @@ export function steeringForce({ steerInput, canopyDeploy, steerForce, speed, max
 	return (steerInput * steerForce) * canopyDeploy * steerEffectiveness;
 }
 
-// Calculate steering acceleration (m/s^2)
 export function steeringAcceleration({ steerInput, canopyDeploy, steerForce, mass, speed, maxSpeed = 8 }) {
 	return steeringForce({ steerInput, canopyDeploy, steerForce, speed, maxSpeed }) / mass;
 }
