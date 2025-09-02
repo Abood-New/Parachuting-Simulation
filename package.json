@@ -12,7 +12,6 @@
     "vite": "^7.0.3"
   },
   "dependencies": {
-    "cannon-es": "^0.20.0",
     "three": "^0.178.0"
   }
 }
