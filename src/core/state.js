@@ -7,7 +7,7 @@ export const state = {
 	cameraMode: 'chase',
 
 	groundSize: 2200,
-	launchTowerHeight: 2000,
+	launchTowerHeight: 1000,
 	buildingBounds: [],
 
 	treesGroup: null,

@@ -34,7 +34,6 @@ export function buildCity() {
 			addBuilding(x, z, w, d, h, color.getHex());
 		}
 	}
-	// Removed central tower
 }
 
 

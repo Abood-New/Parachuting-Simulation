@@ -1,12 +1,7 @@
 import { THREE } from '../core/scene.js';
 import { state } from '../core/state.js';
 import {
-	swatheParachute,
-	volumeParachute,
 	dragAcceleration,
-	netAcceleration,
-	liftAcceleration,
-	glideAcceleration,
 	steeringAcceleration,
 	PHYS_DEFAULTS
 } from '../core/phys.js';
@@ -27,17 +22,6 @@ export function computeMoveInput() {
 	if (move.lengthSq() > 0) move.normalize();
 	return move.multiplyScalar(baseSpeed * responsiveness);
 }
-
-// export function updateArms(dt) {
-// 	const target = state.parachuteOpen ? 1 : 0;
-// 	state.armsRaise = (state.armsRaise || 0);
-// 	state.armsRaise += (target - state.armsRaise) * Math.min(1, dt * 6);
-// 	const rotUp = THREE.MathUtils.degToRad(70) * state.armsRaise;
-// 	const rotOut = THREE.MathUtils.degToRad(10) * state.armsRaise;
-// 	if (state.fallbackRight) { state.fallbackRight.rotation.x = -rotUp; state.fallbackRight.rotation.z = -rotOut; }
-// 	if (state.fallbackLeft) { state.fallbackLeft.rotation.x = -rotUp; state.fallbackLeft.rotation.z = rotOut; }
-// }
-
 export function applyAerodynamics(dt) {
 	if (state.inVehicle) {
 		state.acc.set(0, 0, 0);
@@ -61,8 +45,6 @@ export function applyAerodynamics(dt) {
 		const areaEff = THREE.MathUtils.lerp(PHYS_DEFAULTS.Area_body, PHYS_DEFAULTS.Area_canopy, state.canopyDeploy);
 		const cdEff = THREE.MathUtils.lerp(PHYS_DEFAULTS.Cd_body, PHYS_DEFAULTS.Cd_canopy, state.canopyDeploy);
 		const cdWithTurbulence = cdEff * (1 + Math.sin(state.windTimer * 2) * 0.05);
-
-		// Use the new dragAcceleration function from phys.js
 		const dragMag = dragAcceleration({
 			cd: cdWithTurbulence,
 			area: areaEff,
@@ -72,41 +54,12 @@ export function applyAerodynamics(dt) {
 		});
 		state.acc.addScaledVector(opp, dragMag);
 		if (state.parachuteOpen) {
-			const sink = Math.max(0, -relVel.y);
-			const angleOfAttack = Math.abs(relVel.y / speed);
-
-			// Use the new liftAcceleration function from phys.js
-			const liftAcc = liftAcceleration({
-				sinkRate: sink,
-				canopyDeploy: state.canopyDeploy,
-				liftGain: PHYS_DEFAULTS.Lift_gain,
-				mass: PHYS_DEFAULTS.mass,
-				angleOfAttack: angleOfAttack
-			});
-			state.acc.y += liftAcc;
-
-			const horiz = new THREE.Vector3(relVel.x, 0, relVel.z);
-			if (horiz.lengthSq() > 1e-6) {
-				const fwd = horiz.normalize().negate();
-
-				// Use the new glideAcceleration function from phys.js
-				const glideAcc = glideAcceleration({
-					sinkRate: sink,
-					canopyDeploy: state.canopyDeploy,
-					glideGain: PHYS_DEFAULTS.Glide_gain,
-					mass: PHYS_DEFAULTS.mass,
-					angleOfAttack: angleOfAttack
-				});
-				state.acc.addScaledVector(fwd, glideAcc);
-			}
 			let steer = 0; if (state.keys.q) steer -= 1; if (state.keys.e) steer += 1;
 			if (steer !== 0) {
 				let forward = new THREE.Vector3(state.vel.x, 0, state.vel.z);
 				if (forward.lengthSq() < 1e-4) { state.camera.getWorldDirection(forward); forward.y = 0; }
 				if (forward.lengthSq() > 0) forward.normalize();
 				const right = new THREE.Vector3().crossVectors(new THREE.Vector3(0, 1, 0), forward).normalize();
-
-				// Use the new steeringAcceleration function from phys.js
 				const steerAcc = steeringAcceleration({
 					steerInput: steer,
 					canopyDeploy: state.canopyDeploy,

@@ -14,15 +14,13 @@ export async function loadHelicopter(modelUrlHref) {
     state.helicopter = heli;
     state.scene.add(heli);
 
-    // Try to find seat node by name
     let seat = null;
     heli.traverse(o => {
         const n = (o.name || '').toLowerCase();
         if (!seat && (n.includes('seat') || n.includes('pilot') || n.includes('cockpit'))) seat = o;
     });
-    state.heliSeatNode = seat || heli; // fallback to root
+    state.heliSeatNode = seat || heli;
 
-    // Position helicopter where the tower used to be
     heli.position.set(0, state.launchTowerHeight + 4, 0);
     heli.rotation.y = 0;
 }

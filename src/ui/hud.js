@@ -22,9 +22,6 @@ export function updateHUD(windVec) {
 	const speed = state.vel.length();
 	const horizontalSpeed = Math.sqrt(state.vel.x * state.vel.x + state.vel.z * state.vel.z);
 	const verticalSpeed = Math.abs(state.vel.y);
-	const glideRatio = horizontalSpeed > 0.1 ? (horizontalSpeed / verticalSpeed).toFixed(1) : '∞';
-	const timeToGround = state.pos.y / Math.max(0.1, Math.abs(state.vel.y));
-	const landingDistance = Math.sqrt(Math.pow(state.vel.x * timeToGround, 2) + Math.pow(state.vel.z * timeToGround, 2));
 
 	const gravityForce = PHYS_DEFAULTS.mass * Math.abs(PHYS_DEFAULTS.gravity); // Weight force (N)
 	const rho = airDensityAt(state.pos.y);

@@ -34,15 +34,10 @@ export async function loadCanopyModel(modelUrlHref) {
 	// Scale canopy so its horizontal radius roughly equals phys.canopyRadius
 	const box = new THREE.Box3().setFromObject(model);
 	const size = new THREE.Vector3(); box.getSize(size);
-	const horizontalRadius = Math.max(size.x, size.z) * 0.5 || 1;
-	const desiredRadius = PHYS_DEFAULTS.canopyRadius;
 	state.canopyBaseScale = 7;
 	model.scale.setScalar(state.canopyBaseScale);
 
-	// Recompute bounds after scaling to align bottom to clearance height
-	const scaledBox = new THREE.Box3().setFromObject(model);
 	const bottomY = 1.5;
-	// We want the canopy to sit centered above harness; minor offset can be tuned from GUI if needed
 	state.canopyBottomOffsetY = bottomY; // lift so bottom touches y=0 in local
 
 	const attachNodes = [];
