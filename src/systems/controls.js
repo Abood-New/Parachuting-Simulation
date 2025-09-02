@@ -1,7 +1,6 @@
 import { THREE } from '../core/scene.js';
 import { state } from '../core/state.js';
 import { cameraShake, setCameraTargets } from './camera.js';
-import { triggerParachuteOpenFX } from '../systems/sound.js';
 import { detachPlayerFromHelicopter } from '../entities/vehicle.js';
 
 export function initControls() {
@@ -23,16 +22,9 @@ export function initControls() {
 		if (k === 'p' && !state.onGround && state.vel.y < -1) {
 			state.canopyTarget = state.canopyTarget > 0 ? 0 : 1;
 			cameraShake(0.55, 220);
-			if (state.canopyTarget > 0) triggerParachuteOpenFX();
 		}
 		if (k === 'j') {
-			if (state.inVehicle) {
-				detachPlayerFromHelicopter();
-				cameraShake(0.5, 220);
-				state.vel.add(new THREE.Vector3(THREE.MathUtils.randFloat(-2, 2), THREE.MathUtils.randFloat(1, 3), THREE.MathUtils.randFloat(-2, 2)));
-			} else {
-				state.vel.add(new THREE.Vector3(THREE.MathUtils.randFloat(-5, 5), THREE.MathUtils.randFloat(2, 5), THREE.MathUtils.randFloat(-5, 5)));
-			}
+			detachPlayerFromHelicopter();
 		}
 		if (k === 'r') {
 			resetPosition();

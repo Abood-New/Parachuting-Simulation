@@ -19,7 +19,7 @@ export function initHUD() {
 }
 
 export function updateHUD(windVec) {
-	const speed = state.vel.length();
+	const speed = state.vel.length(); // todo
 	const horizontalSpeed = Math.sqrt(state.vel.x * state.vel.x + state.vel.z * state.vel.z);
 	const verticalSpeed = Math.abs(state.vel.y);
 

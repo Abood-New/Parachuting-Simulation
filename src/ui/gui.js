@@ -26,7 +26,6 @@ const guiState = {
     // Parachute Specifications
     radius_parachute: 50, // cm
     k: 0.7, // drag coefficient
-    thik: 15, // cm - parachute thickness
     parachute_tall: 100, // cm - rectangular parachute length
     parachute_width: 20, // cm - rectangular parachute width
     shape_of_parachute: false, // false = circular, true = rectangular
@@ -72,9 +71,6 @@ export function initGUI() {
     fParaSpecs.add(guiState, 'k', 0.7, 1.4, 0.1).onChange(v => {
         PHYS_DEFAULTS.Cd_body = v;
         PHYS_DEFAULTS.Cd_canopy = v * 1.5; // Canopy has higher drag
-    });
-    fParaSpecs.add(guiState, 'thik', 0, 200, 1).onChange(v => {
-        updateParachuteArea();
     });
     fParaSpecs.add(guiState, 'parachute_tall', 0, 1000, 1).onChange(v => {
         updateParachuteArea();

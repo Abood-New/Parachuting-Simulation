@@ -6,14 +6,6 @@ export function swatheParachute({ shapeOfParachute, radius, parachuteTall, parac
 	} else return 0;
 }
 
-export function volumeParachute({ shapeOfParachute, radius, R, parachuteTall, parachuteWidth, thik }) {
-	if (shapeOfParachute === false) {
-		return ((2 / 3) * Math.PI * ((radius ** 3) - (R ** 3))) / 1000000;
-	} else if (shapeOfParachute === true) {
-		return (parachuteTall * parachuteWidth * thik) / 1000000;
-	} else return 0;
-}
-
 export function mParachute(roh, volume) {
 	return roh * volume;
 }
@@ -62,8 +54,6 @@ export const PHYS_DEFAULTS = {
 	autoOpen: true, // Auto-open parachute
 	autoOpenAltitude: 120, // Auto-open altitude (m)
 	canopyClearanceY: 2.6, // Canopy clearance (m)
-	ropeThickness: 0.09, // Rope thickness (m)
-	ropeCount: 16, // Number of ropes
 	canopyRadius: 9.2, // Canopy radius (m)
 	playerScale: 1.8, // Player scale
 	windMode: 'dynamic', // Wind mode
